@@ -241,14 +241,34 @@ var likert_page = {
         stimulus: ColorWordThankYouText 
     };  
 
-    var stroop_end = {
+//     var stroop_end = {
+//       type: "html-keyboard-response",
+//       stimulus: '<div style="width: 800px;">'+  
+//         '<p>Well done!!.</p>'+  
+//        ' <p>Press any key to move to Task-2 ..</p>'+
+//         '</div>', 
+//         choices: jsPsych.ALL_KEYS 
+//       }
+   var stroop_end = {
       type: "html-keyboard-response",
-      stimulus: '<div style="width: 800px;">'+  
+      stimulus: function() {  
+        var DataFromThisPracticeRun = jsPsych.data.get().filter({type: 'test trial'}).last(16*ColorWordPracticeRepeats) 
+        var total_trials = DataFromThisPracticeRun.count(); 
+        var NumberCorrect = DataFromThisPracticeRun.filter({correct: true}).count() 
+        var accuracy = Math.round(NumberCorrect / total_trials * 100);  
+        var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').mean()); 
+        var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').mean());
+        console.log("STROOP REPORT")
+        console.log(total_trials, NumberCorrect, accuracy, congruent_rt, incongruent_rt)
+
+
+      return '<div style="width: 800px;">'+  
         '<p>Well done!!.</p>'+  
        ' <p>Press any key to move to Task-2 ..</p>'+
-        '</div>', 
+        '</div>';}, 
         choices: jsPsych.ALL_KEYS 
       }
+   
 
     var min_divWidth = -1000
     var max_divWidth = 1000
