@@ -259,6 +259,7 @@ var likert_page = {
         var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').mean()); 
         var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').mean());
         console.log("STROOP REPORT")
+        console.log("total trials, correct responses, accuracy, congruent RT, Incongruent RT);
         console.log(total_trials, NumberCorrect, accuracy, congruent_rt, incongruent_rt)
 
 
@@ -822,8 +823,11 @@ var likert_page = {
           "<p>All done!</p>"+ 
           "<p>You correctly identified "+n_correct+" of the "+n_match+" matching items.</p>"+ 
           "<p>You incorrectly identified "+false_alarms+" of the "+n_nonmatch+" non-matching items as matches.</p>"+  
-          "<p>Please press any key to proceed"  
-          
+          "<p>Please press any key to proceed" ; 
+        var av_rt = Math.round(jsPsych.data.get().filter({match: true, correct: true}).select('rt').mean());  
+        console.log("CPT Report");
+        console.log("Accuracy, Average response time in ms");
+        console.log(n_correct/n_match * 100, av_rt);
         return html;  
       },  
       choices: jsPsych.ALL_KEYS 
