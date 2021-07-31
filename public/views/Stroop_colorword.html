@@ -236,10 +236,26 @@ var likert_page = {
        }
     } 
       /* define thank you trial */  
+//     var thank_you = { 
+//         type: "html-keyboard-response", 
+//         stimulus: ColorWordThankYouText 
+//     };  
+    
     var thank_you = { 
         type: "html-keyboard-response", 
-        stimulus: ColorWordThankYouText 
-    };  
+        stimulus: function(){
+
+          var TMT_rt = Math.round(jsPsych.data.get().filter({trial_type:'serial-reaction-time-mouse'}).select('rt').mean()); 
+          var total = TMT_rt*30 ;
+
+          console.log("TMT Report")
+          console.log("Average response time, total time")
+          console.log(TMT_rt/1000,total/1000);
+          return ColorWordThankYouText ;
+        }
+
+    
+    };
 
 //     var stroop_end = {
 //       type: "html-keyboard-response",
