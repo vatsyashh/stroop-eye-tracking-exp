@@ -259,7 +259,7 @@ var likert_page = {
         var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').mean()); 
         var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').mean());
         console.log("STROOP REPORT")
-        console.log("total trials, correct responses, accuracy, congruent RT, Incongruent RT);
+        console.log("total trials, correct responses, accuracy, congruent RT, Incongruent RT");
         console.log(total_trials, NumberCorrect, accuracy, congruent_rt, incongruent_rt)
 
 
