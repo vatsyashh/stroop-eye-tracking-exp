@@ -251,6 +251,23 @@ var likert_page = {
           console.log("TMT Report")
           console.log("Average response time, total time")
           console.log(TMT_rt/1000,total/1000);
+
+          var TMT_score;
+          if(TMT_rt > 8000){                                                         // Slab 1
+            TMT_score = 2;
+          }else if(TMT_rt>5000 && TMT_rt<=8000){                                     // Slab 2
+            TMT_score = Math.ceil(15 -  (15-2) * (TMT_rt - 5000)/(8000-5000) );
+          }else if(TMT_rt>3000 && TMT_rt<=5000){                                     // Slab 3
+            TMT_score =  Math.ceil(30 - (30-15)*(TMT_rt - 3000)/(5000-3000) );
+          }else if(TMT_rt>2000 && TMT_rt<=3000){                                     // Slab 4
+            TMT_score =  Math.ceil(60 - (60-30)*(TMT_rt - 2000)/(3000-2000));
+          }else if(TMT_rt>1200 && TMT_rt<=2000){                                     // Slab 5
+            TMT_score =  Math.ceil(98 - (98-60)*(TMT_rt - 1000)/(2000-1000))
+          }else{                                                                     // Slab 6
+            TMT_score = 99;
+          }
+
+          console.log("TMT FINAL SCOREEEEEEEEEEE______________",TMT_score);
           return ColorWordThankYouText ;
         }
 
@@ -270,15 +287,72 @@ var likert_page = {
       stimulus: function() {  
         var DataFromThisPracticeRun = jsPsych.data.get().filter({type: 'test trial'}).last(16*ColorWordPracticeRepeats) 
         var total_trials = DataFromThisPracticeRun.count(); 
-        var NumberCorrect = DataFromThisPracticeRun.filter({correct: true}).count() 
+        var total_C =  DataFromThisPracticeRun.filter({Congruency: 'Con'}).count() ;
+        var total_I =  DataFromThisPracticeRun.filter({Congruency: 'Incon'}).count() ;
+        var NumberCorrect =  DataFromThisPracticeRun.filter({correct: true}).count()
+        var NumberCorrect_C = DataFromThisPracticeRun.filter({correct: true, Congruency: 'Con'}).count() 
+        var NumberCorrect_I = DataFromThisPracticeRun.filter({correct: true, Congruency: 'Incon'}).count() 
         var accuracy = Math.round(NumberCorrect / total_trials * 100);  
-        var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').mean()); 
-        var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').mean());
-        console.log("STROOP REPORT")
-        console.log("total trials, correct responses, accuracy, congruent RT, Incongruent RT");
-        console.log(total_trials, NumberCorrect, accuracy, congruent_rt, incongruent_rt)
+        
+        var rt = Math.round(jsPsych.data.get().filter({correct: true}).select('rt').median());
+        var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').median()); 
+        var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').median());
+        // Taking median RT referring from https://www.jneurosci.org/content/33/16/6776.long
+        var accuracy_C = Math.round(NumberCorrect_C / total_C * 100);  
+        var accuracy_I = Math.round(NumberCorrect_I / total_I * 100); 
 
+        var efficiency = (accuracy/rt * 100);
+     
+        console.log("STROOP REPORT");
+        // console.log("total trials, correct responses, accuracy, congruent RT, Incongruent RT");
+        // console.log(total_trials, NumberCorrect, accuracy, congruent_rt, incongruent_rt);
 
+        console.log("Congruent Stimuli");
+        console.log("Total Stimuli, Correct,accuracy, Median RT, Inv_efficiency") ;
+        console.log(total_C, NumberCorrect_C, accuracy_C, congruent_rt,-1*(congruent_rt/accuracy_C) ) ;
+        console.log("Incongruent Stimuli");
+        console.log("Total Stimuli, Correct,accuracy, Median RT, Inv_efficiency") ;
+        console.log(total_I, NumberCorrect_I, accuracy_I, incongruent_rt, -1*(incongruent_rt/accuracy_I)) ;
+
+        var eff_C = -1*(congruent_rt/accuracy_C);
+        var eff_I = -1*(incongruent_rt/accuracy_I);
+
+        var stroop_score = (eff_C - eff_I)/(eff_C + eff_I) * 100 ; 
+
+        var eff2_C = accuracy_C/congruent_rt ;
+        var eff2_I = accuracy_I/incongruent_rt ;
+
+        var score2 = (eff2_C - eff2_I)/(eff2_C + eff2_I) * 100 ; 
+
+        console.log("Stroop score", stroop_score);
+
+        console.log("efficiency_c", eff2_C, "efficiency_I", eff2_I);
+        console.log("Score 2", score2);
+
+        console.log("HEUEHUEHE",rt,accuracy, efficiency);
+
+        var Stroop_score;
+        if(accuracy>30 && rt > 400){
+          if(efficiency<=4){
+            Stroop_score = Math.ciel(20 - (20 * (4- efficiency)/(4-0) )) ;
+          }else if(efficiency>4 && efficiency<=8){
+            Stroop_score = Math.ceil(50 -  (50-20) * (8- efficiency)/(8-4) );
+          }else if(efficiency>8 && efficiency<=12){
+            Stroop_score = Math.ceil(70 -  (70-50) * (12- efficiency)/(12-8) );
+          }
+          else if(efficiency>12 && efficiency<=17){
+            Stroop_score = Math.ceil(90 -  (90-70) * (17- efficiency)/(17-12) );
+          }else if(efficiency>17 && efficiency<=20){
+            Stroop_score = Math.ceil(98 -  (98-90) * (20- efficiency)/(20-17) );
+          }else{
+            Stroop_score = 99;
+          }
+
+        }else{
+          Stroop_score = accuracy ; 
+        }
+
+        console.log("Final Stroop Score_________________",Stroop_score);
       return '<div style="width: 800px;">'+  
         '<p>Well done!!.</p>'+  
        ' <p>Press any key to move to Task-2 ..</p>'+
