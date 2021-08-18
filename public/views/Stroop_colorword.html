@@ -914,15 +914,26 @@ var likert_page = {
           "<p>You correctly identified "+n_correct+" of the "+n_match+" matching items.</p>"+ 
           "<p>You incorrectly identified "+false_alarms+" of the "+n_nonmatch+" non-matching items as matches.</p>"+  
           "<p>Please press any key to proceed" ; 
-        var av_rt = Math.round(jsPsych.data.get().filter({match: true, correct: true}).select('rt').mean());  
+        var av_rt = Math.round(jsPsych.data.get().filter({match: true, correct: true}).select('rt').median());  
         console.log("CPT Report");
         console.log("Accuracy, Average response time in ms");
         console.log(n_correct/n_match * 100, av_rt);
+        console.log(n_nonmatch,n_match, n_correct, false_alarms );
+        var eff_cpt = Math.min(99, (10**4 * n_correct)/ (n_match * av_rt)*4 );
+        var acc_nonmatch = 100*(n_nonmatch - false_alarms) / n_nonmatch  ;
+
+
+        console.log("CPT EHHEHE", eff_cpt, acc_nonmatch);
+
+        var CPT_score = eff_cpt*0.6 + acc_nonmatch * 0.4 ;
+        console.log("FINAL CPT Score__________________",CPT_score );
+
+
         return html;  
       },  
       choices: jsPsych.ALL_KEYS 
     } 
-    timeline.push(feedback);  
+    timeline.push(feedback);   
 
 
 
