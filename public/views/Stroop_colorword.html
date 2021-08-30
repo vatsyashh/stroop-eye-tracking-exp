@@ -676,9 +676,9 @@ var likert_page = {
     var n_back_set = ['Z', 'X', 'C', 'V', 'B', 'N'];  
     var sequence = [];  
     var prac_sequence = [] ;
-    var how_many_back = 1;  
+    var how_many_back = 2;  
     var prac_sequence_length = 20 ;
-    var sequence_length = 100; 
+    var sequence_length = 50; 
     /* Instructions */  
      
     var start_cpt = {
@@ -704,9 +704,9 @@ var likert_page = {
       stimulus: '<div style="width: 800px;border: thin solid #ec7b7b ; border-radius: 10px ; padding: 10px">'+  
             `
             <ol>
-            <li style="text-align:left; padding:8px; font-size: 18px">You will see a sequence of letters presented one at a time. Your task is to determine if the letter on the screen is the same that appeared on the last screen.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">You will see a sequence of letters presented one at a time. Your task is to determine if the letter on the screen is the same that appeared on the 2nd last screen.</li>
             <li style="text-align:left; padding:8px; font-size: 18px">If the letter is a match <span style="font-weight: bold;">press the M key.</li>
-            <li style="text-align:left; padding:8px; font-size: 18px">For example, if you saw the sequence X, C, C, B, B, X you would press the M key when the second C appeared and similarly when the second B appeared on the screen.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">For example, if you saw the sequence X, C, V, C, B, D, B, X you would press the M key when the second C appeared and similarly when the second B appeared on the screen.</li>
             <li style="text-align:left; padding:8px; font-size: 18px">You do not need to press any key when there is not a match.</li>
             </ol>`
           + 
@@ -719,7 +719,7 @@ var likert_page = {
       stimulus: '<div style="width: 800px;border: thin solid #ec7b7b ; border-radius: 10px ;padding: 10px">'+  
         '<p>The sequence will begin on the next screen.</p>'+ 
         '<p>This is a practice trial. Lets see how focused you are.</p>'+ 
-        '<p>Remember: press the M key if a letter appears on simultaneous screens.</p>'+ 
+        '<p>Remember: press the M key if a letter appears on alternate screens.</p>'+ 
         '</div>', 
       choices: ["I'm ready to start!"], 
       post_trial_gap: 1000  
