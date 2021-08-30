@@ -677,8 +677,8 @@ var likert_page = {
     var sequence = [];  
     var prac_sequence = [] ;
     var how_many_back = 1;  
-    var prac_sequence_length = 10 ;
-    var sequence_length = 20; 
+    var prac_sequence_length = 20 ;
+    var sequence_length = 100; 
     /* Instructions */  
      
     var start_cpt = {
@@ -756,7 +756,7 @@ var likert_page = {
         //'<div style = "margin-top:100px ; margin-left:200px" ><span style="font-size: 96px;">'+letter+'</span></div>'
       },  
       choices: ['M'], 
-      trial_duration: 1500, 
+      trial_duration: 1800, 
       response_ends_trial: false, 
       post_trial_gap: 500, 
       extensions: [ 
@@ -861,7 +861,7 @@ var likert_page = {
         //'<div style = "margin-top:100px ; margin-left:200px" ><span style="font-size: 96px;">'+letter+'</span></div>'
       },  
       choices: ['M'], 
-      trial_duration: 1500, 
+      trial_duration: 1800, 
       response_ends_trial: false, 
       post_trial_gap: 500,  
       extensions: [ 
@@ -974,9 +974,9 @@ var likert_page = {
 
 
 
-  var grid_rows = 10;
+  var grid_rows = 12;
   var grid_cols = 21;
-  var square_size = 50;
+  var square_size = 45;
 
   var grid = [];
   var locations = [];
@@ -996,16 +996,17 @@ var likert_page = {
     }
   }
 
-  char_per_row = 3
+  // let grid2 = grid;
+  char_per_row = 2
   let element_locs = new Map()
-  var elements = [1,"A",2,"B",3,"C",4,"D",5,"E",6,"F",7,"G",8,"H",9,"I",10,"J",11,"K",12,"L",13,"M",14,"N",15,"O"]
+  var elements = [1,"A",2,"B",3,"C",4,"D",5,"E",6,"F",7,"G",8,"H",9,"I",10,"J",11,"K",12,"L"]
   var shuffledArray = jsPsych.randomization.repeat(elements, 1);
   for(var i=0;i<grid_rows;i++){
     var sample = jsPsych.randomization.sampleWithoutReplacement(arr, char_per_row);
     var heh = jsPsych.randomization.sampleWithoutReplacement(elements, char_per_row);
     heh =  shuffledArray.slice(i*char_per_row,char_per_row*i+char_per_row);
     console.log(heh);
-    for(var j=0;j<4;j++){
+    for(var j=0;j<2;j++){
       grid[i][sample[j]] = heh[j];
       element_locs.set(heh[j], [i,sample[j]]) ; 
 
@@ -1085,6 +1086,10 @@ var likert_page = {
         //target_color: getColor,
         grid_square_size: square_size,
         allow_nontarget_responses: false,
+        data: { 
+        phase: 'Trial1',  
+      
+      }, 
     
       
 
@@ -1099,22 +1104,332 @@ var likert_page = {
     
       // }
     ],
-    repetitions: 30,
+    repetitions: 24,
   }
 
-  // jsPsych.init({
-  //   timeline: [timeline_2],
-  //   on_finish: function() {
-  //     jsPsych.data.displayData();
-  //   },
-  //   default_iti: 0
-  // });
+
+  
+
 
   timeline.push(instructions_tmt_1)
   timeline.push(start_tmt);
   timeline.push(instructions_tmt_2)
   timeline.push(timeline_2)
 
+
+
+
+  var grid_rows = 9;
+  var grid_cols = 21;
+  var square_size = 50;
+
+  var grid2 = [];
+  var locations2 = [];
+  var arr2 = [];
+  for(var i=0; i<grid_cols;i++){
+    arr2.push(i);
+  }
+  for(var i=0; i<grid_rows; i++){
+    grid2.push([]);
+   
+    for(var j=0; j<grid_cols; j++){
+ 
+      grid2[i].push(0);
+      // if(i>0 && i < grid_rows-1 && j > 0 && j < grid_cols - 1){
+      //   locations.push([i,j]);
+      // }
+    }
+  }
+
+  // let grid2 = grid;
+  char_per_row = 3
+  let element_locs2 = new Map()
+  var elements = [1,"A",2,"B",3,"C",4,"D",5,"E",6,"F",7,"G",8,"H",9,"I",10,"J",11,"K",12,"L",13,"M",14]
+  var shuffledArray = jsPsych.randomization.repeat(elements, 1);
+  for(var i=0;i<grid_rows;i++){
+    var sample = jsPsych.randomization.sampleWithoutReplacement(arr2, char_per_row);
+    var heh = jsPsych.randomization.sampleWithoutReplacement(elements, char_per_row);
+    heh =  shuffledArray.slice(i*char_per_row,char_per_row*i+char_per_row);
+    console.log(heh);
+    for(var j=0;j<3;j++){
+      grid2[i][sample[j]] = heh[j];
+      element_locs2.set(heh[j], [i,sample[j]]) ; 
+
+      if(i>0 && i < grid_rows-1 && sample[j] > 0 && sample[j] < grid_cols - 1){
+      locations2.push([i,sample[j]])
+     }
+    }
+  }
+//   console.log(grid)
+//   console.log(locations)
+//   console.log(element_locs)
+
+
+  var last_predictor = null;
+  var last_target = null;
+  var colors = ["#aaf300"];
+  var deltas = [[-1,-1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1,0], [1,1]];
+  var order = [0,1,2,3,4,5,6,7];
+  order = jsPsych.randomization.shuffle(order);
+  var current_idx2 = -1;
+
+
+
+  function getNextPredictor2(){
+
+    current_idx2++;
+    //console.log(current_idx)
+    if(current_idx2 >= elements.length){
+      order = jsPsych.randomization.shuffle(order);
+      current_idx2 = 0;
+    }
+    var predictor = jsPsych.randomization.sampleWithoutReplacement(locations2, 1)[0];
+    if(last_target !== null){
+      while(predictor[0] == last_target[0] && predictor[1] == last_target[1]){
+        predictor = jsPsych.randomization.sampleWithoutReplacement(locations2, 1)[0];
+      }
+    }
+    last_predictor = predictor;
+    //console.log(predictor)
+    //console.log(elements[current_idx])
+    //console.log(element_locs.has(1))
+    //console.log(predictor)
+
+    predictor = element_locs2.get(elements[current_idx2])
+    var s = grid2[predictor[0]][predictor[1]]
+    if (typeof s === 'string'){
+      grid2[predictor[0]][predictor[1]] = s.toLowerCase();
+    }
+    else{
+      grid2[predictor[0]][predictor[1]] = -1*grid2[predictor[0]][predictor[1]]
+    }
+    console.log(s)
+    //grid[predictor[0]][predictor[1]] = s.toLowerCase()
+    return predictor;
+  }
+
+
+  function getNextTarget(){                           
+    var target = last_predictor.slice();
+    var d = deltas[order[current_idx2]];
+    target[0] = target[0] + d[0];
+    target[1] = target[1] + d[1];
+    last_target = target;
+    return target;
+  }
+
+  function getColor(){
+    return colors[0];
+  }
+
+  var timeline_3 = {
+    timeline: [
+      {
+        type: 'serial-reaction-time-mouse',
+        grid: grid2,
+        target: getNextPredictor2,
+        //target_color: getColor,
+        grid_square_size: square_size,
+        allow_nontarget_responses: false,
+        data: { 
+        phase: 'Trial2',  
+      
+      }, 
+    
+      
+
+      },
+      // {
+      //   type: 'serial-reaction-time-mouse',
+      //   grid: grid,
+      //   target: getNextTarget,
+      //   target_color: getColor,
+      //   grid_square_size: square_size,
+
+    
+      // }
+    ],
+    repetitions: 27,
+  }
+
+    var instructions_tmt_3 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #65dc7f ; border-radius: 10px ;">'+  
+        
+            `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px">    Well done on Trial 1.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">There will be 2 more trials.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">Try to be as fast as possible</li>
+          
+            </ul>`
+
+          +  
+        '</div>', 
+      choices: ["Continue"] 
+    } 
+
+
+
+timeline.push(instructions_tmt_3);
+timeline.push(timeline_3);
+
+
+
+
+
+
+
+
+ 
+////////////////////////////////////////////////////// Trial 3
+
+
+  var grid_rows = 10;
+  var grid_cols = 21;
+  var square_size = 50;
+
+  var grid3 = [];
+  var locations3 = [];
+  var arr3 = [];
+  for(var i=0; i<grid_cols;i++){
+    arr3.push(i);
+  }
+  for(var i=0; i<grid_rows; i++){
+    grid3.push([]);
+   
+    for(var j=0; j<grid_cols; j++){
+ 
+      grid3[i].push(0);
+      // if(i>0 && i < grid_rows-1 && j > 0 && j < grid_cols - 1){
+      //   locations.push([i,j]);
+      // }
+    }
+  }
+
+  // let grid2 = grid;
+  char_per_row = 3
+  let element_locs3 = new Map()
+  var elements = [1,"A",2,"B",3,"C",4,"D",5,"E",6,"F",7,"G",8,"H",9,"I",10,"J",11,"K",12,"L",13,"M",14,"N",15,"O"]
+  var shuffledArray = jsPsych.randomization.repeat(elements, 1);
+  for(var i=0;i<grid_rows;i++){
+    var sample = jsPsych.randomization.sampleWithoutReplacement(arr3, char_per_row);
+    var heh = jsPsych.randomization.sampleWithoutReplacement(elements, char_per_row);
+    heh =  shuffledArray.slice(i*char_per_row,char_per_row*i+char_per_row);
+    console.log(heh);
+    for(var j=0;j<3;j++){
+      grid3[i][sample[j]] = heh[j];
+      element_locs3.set(heh[j], [i,sample[j]]) ; 
+
+      if(i>0 && i < grid_rows-1 && sample[j] > 0 && sample[j] < grid_cols - 1){
+      locations3.push([i,sample[j]])
+     }
+    }
+  }
+//   console.log(grid)
+//   console.log(locations)
+//   console.log(element_locs)
+
+
+  var last_predictor = null;
+  var last_target = null;
+  var colors = ["#aaf300"];
+  var deltas = [[-1,-1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1,0], [1,1]];
+  var order = [0,1,2,3,4,5,6,7];
+  order = jsPsych.randomization.shuffle(order);
+  var current_idx3 = -1;
+
+
+
+  function getNextPredictor3(){
+
+    current_idx3++;
+    //console.log(current_idx)
+    if(current_idx3 >= elements.length){
+      order = jsPsych.randomization.shuffle(order);
+      current_idx3 = 0;
+    }
+    var predictor = jsPsych.randomization.sampleWithoutReplacement(locations3, 1)[0];
+    if(last_target !== null){
+      while(predictor[0] == last_target[0] && predictor[1] == last_target[1]){
+        predictor = jsPsych.randomization.sampleWithoutReplacement(locations3, 1)[0];
+      }
+    }
+    last_predictor = predictor;
+    //console.log(predictor)
+    //console.log(elements[current_idx])
+    //console.log(element_locs.has(1))
+    //console.log(predictor)
+
+    predictor = element_locs3.get(elements[current_idx3])
+    var s = grid3[predictor[0]][predictor[1]]
+    if (typeof s === 'string'){
+      grid3[predictor[0]][predictor[1]] = s.toLowerCase();
+    }
+    else{
+      grid3[predictor[0]][predictor[1]] = -1*grid3[predictor[0]][predictor[1]]
+    }
+    console.log(s)
+    //grid[predictor[0]][predictor[1]] = s.toLowerCase()
+    return predictor;
+  }
+
+
+  function getNextTarget(){                           
+    var target = last_predictor.slice();
+    var d = deltas[order[current_idx3]];
+    target[0] = target[0] + d[0];
+    target[1] = target[1] + d[1];
+    last_target = target;
+    return target;
+  }
+
+  function getColor(){
+    return colors[0];
+  }
+
+  var timeline_4 = {
+    timeline: [
+      {
+        type: 'serial-reaction-time-mouse',
+        grid: grid3,
+        target: getNextPredictor3,
+        //target_color: getColor,
+        grid_square_size: square_size,
+        allow_nontarget_responses: false,
+        data: { 
+        phase: 'Trial3',  
+      
+      }, 
+    
+      
+
+      },
+     
+    ],
+    repetitions: 30,
+  }
+
+    var instructions_tmt_4 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #65dc7f ; border-radius: 10px ;">'+  
+        
+            `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px">   Great performance !!</li>
+            <li style="text-align:left; padding:8px; font-size: 18px"> Press continue to move to the final Trial. </li>
+            
+          
+            </ul>`
+
+          +  
+        '</div>', 
+      choices: ["Continue"] 
+    } 
+
+
+timeline.push(instructions_tmt_4);
+timeline.push(timeline_4);
 
 
 
